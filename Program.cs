@@ -7,7 +7,6 @@ namespace SerialisationProject
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             MySerialisationExercice exercice = null;
@@ -44,11 +43,18 @@ namespace SerialisationProject
             string result = "";
             while (!stopReading)
             {
-                ConsoleKeyInfo info = Console.ReadKey();
+                ConsoleKeyInfo info = Console.ReadKey(true);
                 switch (info.Key)
                 {
                     case ConsoleKey.Enter:
                         return result;
+                    case ConsoleKey.Backspace:
+                        if(result.Length > 0)
+                        {
+                            result = result.Remove(result.Length - 1);
+                            OverwriteCurrentConsoleLine(result);
+                        }
+                        break;
                     case ConsoleKey.Escape:
                         Save(exercice);
                         stopReading = true;
@@ -56,11 +62,36 @@ namespace SerialisationProject
                         break;
                     default:
                         result += info.KeyChar;
+                        OverwriteCurrentConsoleLine(result);
                         break;
                 }
             }
 
             return result;
+        }
+
+        public static void OverwriteCurrentConsoleLine(string s)
+        {
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(s, Console.BufferWidth);
+        }
+
+        public static void ClearCurrentConsoleLine()
+        {
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
+        }
+
+        public static void ClearLastLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
         }
     }
 }
